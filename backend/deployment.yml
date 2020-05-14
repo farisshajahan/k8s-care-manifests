@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: carebe-production
+spec:
+  template:
+    metadata:
+      labels:
+        name: carebe-production
+        app: carebe-production
+    spec:
+      containers:
+        - name: carebe
+          image: <<ACCOUNT_NUMBER>>.dkr.ecr.ap-south-1.amazonaws.com/<<ECR_BACKEND_REPO_NAME>>:latest 
+          imagePullPolicy: Always
+          resources:
+              requests:
+                  memory: "200Mi"
+                  cpu: "200m"
+              limits:
+                  memory: "2000Mi"
+                  cpu: "1"
+          command: [ "/bin/bash", "-c", "--" ]
+          args: [ "python manage.py collectstatic --noinput && python manage.py migrate && /start" ]
+          ports:
+            - containerPort: 9000
+              name: django
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: carebe-production
+          - secretRef:
+              name: carebe-production

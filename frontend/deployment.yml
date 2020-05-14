@@ -1,0 +1,27 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: carefe-production
+spec:
+  template:
+    metadata:
+      labels:
+        name: carefe-production
+        app: carefe-production
+    spec:
+      containers:
+        - name: carefe
+          image: <<ACCOUNT_NUMBER>>.dkr.ecr.ap-south-1.amazonaws.com/<<ECR_FRONTEND_REPO_NAME>>:latest
+          imagePullPolicy: Always
+          resources:
+              requests:
+                  memory: "200Mi"
+                  cpu: "200m"
+              limits:
+                  memory: "2000Mi"
+                  cpu: "1"
+          command: [ "nginx", "-g", "daemon off;" ]
+          ports:
+            - containerPort: 80
+              name: nginx
+              protocol: TCP
